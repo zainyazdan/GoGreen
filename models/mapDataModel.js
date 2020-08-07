@@ -1,7 +1,7 @@
 const mongoose = require('mongoose');
 const Schema = mongoose.Schema;
 
-const mapDataSchema = new Schema({
+const mapPointsSchema = new Schema({
     longitude: {
       type: String,
       required: true
@@ -11,10 +11,15 @@ const mapDataSchema = new Schema({
       required: true
     },
     imagePath: {
-      type: String,
+      type: [String],
       required: true,
       unique: true
     },
+    // plantNumber:  {
+    //   type: Number,
+    //   min: 0,
+    //   required: true
+    // },
     userId: {
       type: mongoose.Schema.Types.ObjectId,
       ref: 'User',
@@ -25,7 +30,11 @@ const mapDataSchema = new Schema({
 });
 
 
-var MapData = mongoose.model('mapData', mapDataSchema);
-module.exports = MapData;
+
+var MapPoints = mongoose.model('mapPoint', mapPointsSchema);
+module.exports = MapPoints;
+
+
+// var thingSchema = new Schema({..}, { timestamps: { createdAt: 'created_at' } });
 
 

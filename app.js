@@ -4,14 +4,10 @@ var path = require('path');
 var cookieParser = require('cookie-parser');
 var logger = require('morgan');
 
-var indexRouter = require('./routes/index');
 
 var app = express();
 
 const mongoose = require('mongoose');
-
-
-
 const url = 'mongodb://localhost:27017/GoGreen';
 const connect = mongoose.connect(url);
 
@@ -40,7 +36,8 @@ var mapRouter = require('./routes/mapRouter');
 
 app.use('/public',express.static('public'));
 
-app.use('/', indexRouter);
+
+
 app.use('/auth/user', userAuthRouter);
 app.use('/map', mapRouter);
 
