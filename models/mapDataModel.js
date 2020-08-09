@@ -10,24 +10,26 @@ const mapPointsSchema = new Schema({
       type: String,
       required: true
     },
+    date : {
+      type: Date,
+      required: true
+    },
     imagePath: {
       type: [String],
       required: true,
-      unique: true
+      unique: false
     },
-    // plantNumber:  {
-    //   type: Number,
-    //   min: 0,
-    //   required: true
-    // },
     userId: {
       type: mongoose.Schema.Types.ObjectId,
       ref: 'User',
       required: true
     }
-}, {
-    timestamps: true
-});
+}
+// , 
+// {
+//     timestamps: true
+// }
+);
 
 
 
