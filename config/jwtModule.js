@@ -31,7 +31,7 @@ exports.sign = async function (payload, id) {
     expiresIn: process.env.TOKEN_EXPIRY_TIME
   };
   try {
-    return await jwt.sign(payload, process.env.TOKEN_KEY , signOptions);
+    return await jwt.sign(payload, "1234-5678" , signOptions);
 
 } catch (error) {
   console.log("try catch error : " , error);
@@ -50,12 +50,12 @@ exports.verify = async function (token) {
     //   // ignoreNotBefore: true,
     //   algorithm: ["RS256"],
     // };
-
+    console.log("process.env.TOKEN_KEY : " + process.env.TOKEN_KEY);
 
     // return jwt.verify(token, publicKEY, verifyOptions);
 
     // return jwt.verify(token, "1234-5678" , verifyOptions);
-    return jwt.verify(token, process.env.TOKEN_KEY);
+    return jwt.verify(token, "1234-5678");
 
   } catch (error) {
     return;

@@ -41,8 +41,7 @@ userAuthRouter.route('/login')
     }
     
     let payload = {
-      id: user._id,
-      email: user.email
+      id: user._id
     };
     // console.log("payload: " , payload);
     // console.log("user._id: " , user._id);
