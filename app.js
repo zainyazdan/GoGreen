@@ -4,13 +4,28 @@ var path = require('path');
 var cookieParser = require('cookie-parser');
 var logger = require('morgan');
 
+const mongoDB = require('./config/db');
 
 var app = express();
+
+// const headersMiddleware = require('./middlewares/HeaderMiddleware')
+// app.use(headersMiddleware);
+
+
+app.use((req, res, next)=>
+{
+	res.header('Access-Control-Allow-Origin', "*");
+  res.header('Access-Control-Allow-Methods','GET,PUT,POST,DELETE');
+  res.header('Access-Control-Allow-Headers', '*');
+	next();
+});
+
+// app.use(mongoDB.ConnectToDatabase);
 
 const mongoose = require('mongoose');
 const url = 'mongodb://localhost:27017/GoGreen';
 const connect = mongoose.connect(url);
-
+// connecting to the database
 connect.then((db) => {
     console.log("Connected to the MongoDB server");
 }, (err) => { console.log(err); });
@@ -33,6 +48,7 @@ app.use(express.static(path.join(__dirname, 'public')));
 
 var userAuthRouter = require('./routes/userAuthRouter');
 var mapRouter = require('./routes/mapRouter');
+const { allowedNodeEnvironmentFlags } = require('process');
 
 app.use('/public',express.static('public'));
 

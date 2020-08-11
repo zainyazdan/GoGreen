@@ -17,8 +17,11 @@ const userSchema = new Schema({
     },
     password: {
       type: String,
+    },
+    verified: {
+      type: Boolean,
+      default: false
     }
-
 }, {
     timestamps: true
 });

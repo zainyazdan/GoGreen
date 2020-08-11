@@ -11,6 +11,7 @@ const fs = require('fs')
 
 const MapDataModel = require('../models/mapDataModel')
 const fileManager = require('../config/fileManager')
+const auth = require('../middlewares/auth')
 
 
 
@@ -31,7 +32,7 @@ const storage = multer.diskStorage({
 
 const imageFileFilter = (req, file, cb) => {
     if(!file.originalname.match(/\.(jpg|jpeg|png|gif)$/)) {
-        return cb(new Error('You can upload only image files!'), false);
+        return cb(new Error('You can only upload image files!'), false);
     }
     cb(null, true);
 };
@@ -48,7 +49,8 @@ const upload = multer({
 // to get all map points
 
 mapRouter.route('/map_points/:userId')
-.get( async (req, res, next) => {
+// .get(auth.verifyToken, auth.verifyUser, async (req, res, next) => {
+  .get(auth.verifyToken, async (req, res, next) => {
 
   // for testing
   req.user = {};
@@ -56,7 +58,7 @@ mapRouter.route('/map_points/:userId')
   // req.user.id = '5f2b2b535107e40378108adf';
 
   let data = await MapDataModel.find({userId: req.user.id}).
-  select('plantNumber longitude latitude imagePath date -_id')
+  select('plantNumber longitude latitude imagePath date _id')
   .sort({'updatedAt': 1});
 
   if(data.length == 0)
