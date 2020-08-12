@@ -12,6 +12,11 @@ var app = express();
 // app.use(headersMiddleware);
 
 
+const headerMiddleware = require("./middlewares/HeaderMiddleware");
+app.use(headerMiddleware);
+
+
+
 app.use((req, res, next)=>
 {
 	res.header('Access-Control-Allow-Origin', "*");

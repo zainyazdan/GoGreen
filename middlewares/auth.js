@@ -9,6 +9,7 @@ var JwtStrategy = require("passport-jwt").Strategy,
   ExtractJwt = require("passport-jwt").ExtractJwt;
 
 
+
 module.exports.verifyToken = function(req, res, next)
 {
   let token = req.cookies.Authorization;
@@ -29,6 +30,8 @@ module.exports.verifyToken = function(req, res, next)
   next();
 }
 
+// 03125202972
+
 
 var cookieExtractor = function (req) {
   var token = null;
@@ -46,13 +49,11 @@ var cookieExtractor = function (req) {
 // }
 
 
-
-
 var opts = {};
 // opts.jwtFromRequest = ExtractJwt.fromAuthHeaderAsBearerToken();
 opts.jwtFromRequest = cookieExtractor;
 // opts.jwtFromRequest = ExtractJwt.fromAuthHeaderWithScheme("bearer");
-opts.secretOrKey = "1234-5678";
+opts.secretOrKey = process.env.TOKEN_KEY;
 // opts.issuer = "mingaproject.com";
 // opts.audience = "mingaproject.com";
 opts.ignoreExpiration = true;
@@ -60,14 +61,14 @@ opts.ignoreNotBefore = true;
 // opts.algorithm = ["RS256"];
 
 
-console.log("opts : ", opts);
+// console.log("opts : ", opts);
 
 // var result = await passport.use(new JwtStrategy(opts));
 // console.log("result passport-jwt : ", result);
 
 passport.use(
   new JwtStrategy(opts, function (jwt_payload, done) {
-    console.log("jwt_payload : ",jwt_payload);
+    // console.log("jwt_payload : ",jwt_payload);
     
     userModel.findOne({ _id: jwt_payload.id }, function (err, user) {
       if (err) {

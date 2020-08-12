@@ -19,53 +19,62 @@ const jwtModule = require('../config/jwtModule');
 userAuthRouter.route('/login')
 .post(async (req, res, next) => {
 
-    if(!req.body.email || !req.body.password){
-        return res.status(400).json({success: false,message:"Provides all parameters i.e. email and password"});
-    }
 
-    let user = await UserModel.findOne({email : req.body.email});
-
-    if(!user){
-        return res.status(409).json({success: false,message:"Invalid username or password"});
-    }
-
-    if(!user.verified){
-      return res.status(409).json({success: false,message:"Please verify your email before login"});
-    }
+  try {
     
-    let result = await bcryptModule.CompareHash(req.body.password, user.password);
-    // console.log("reslult : "+ result);
 
-    if(!result){
-      return res.status(409).json({success: false,message:"Invalid username or password"});
-    }
-    
-    let payload = {
-      id: user._id
-    };
-    // console.log("payload: " , payload);
-    // console.log("user._id: " , user._id);
-
-
-    let token = await jwtModule.sign(payload, user._id);
-
-    // console.log("token: " , token);
-
-
-    res.cookie("Authorization", token);
-    // res.cookie("zain", "Yazdan");
-
-    res.status(200).send({
-      success: true,
-      message: "You are successfully loggedin",
-      user: {
-        id: user._id,
-        firstName: user.firstName,
-        lastName: user.lastName,
+      if(!req.body.email || !req.body.password){
+          return res.status(400).json({success: false,message:"Provides all parameters i.e. email and password"});
       }
-    });
 
-    
+      let user = await UserModel.findOne({email : req.body.email});
+
+      if(!user){
+          return res.status(409).json({success: false,message:"Invalid username or password"});
+      }
+
+      if(!user.verified){
+        return res.status(409).json({success: false,message:"Please verify your email before login"});
+      }
+      
+      let result = await bcryptModule.CompareHash(req.body.password, user.password);
+      // console.log("reslult : "+ result);
+
+      if(!result){
+        return res.status(409).json({success: false,message:"Invalid username or password"});
+      }
+      
+      let payload = {
+        id: user._id
+      };
+      // console.log("payload: " , payload);
+      // console.log("user._id: " , user._id);
+
+
+      let token = await jwtModule.sign(payload, user._id);
+
+      // console.log("token: " , token);
+
+
+      res.cookie("Authorization", token);
+      // res.cookie("zain", "Yazdan");
+
+      res.status(200).send({
+        success: true,
+        message: "You are successfully loggedin",
+        user: {
+          firstName: user.firstName,
+          lastName: user.lastName,
+        }
+      });
+
+      
+  } catch (error) {
+    console.log(error);
+  }
+  
+
+
 });
 
 // 
@@ -80,6 +89,8 @@ userAuthRouter.post("/test", async (req, res, next) => {
 
 userAuthRouter.route('/signup')
 .post(async (req, res, next) => {
+
+  try{
 
     if(!req.body.firstName || !req.body.lastName || !req.body.email || !req.body.password)
     {
@@ -123,10 +134,20 @@ userAuthRouter.route('/signup')
     let mailSent = await sendVerifyEmailURL(CLIENT_NAME, req.body.email);
     if (!mailSent)
       return res.send(
-        "User created, but Unable to send reset email, try later"
+        "User created, but Unable to send verification email, try later"
     );
      
     res.status(200).json({status: true, message: "Verification mail sent successfully. Now verify your email"});
+
+// 03218442769
+// nadeem
+      
+  } catch (error) {
+    console.log(error);
+  }
+  
+
+
 });
 
 
@@ -163,6 +184,8 @@ userAuthRouter.get("/emailverification/:email/:token", async (req, res, next) =>
       console.error(error);
       res.status(500).send();
     }
+
+
 });
 
 

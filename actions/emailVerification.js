@@ -39,7 +39,7 @@ let sendVerifyEmailURL = async (_clientName, _email) => {
       to: _email,
       subject: "Email Verification",
       html:
-        "<h4><b>Thank you for registering as a MingaProject member</b></h4>" +
+        "<h4><b>Thank you for registering as a GoGreen member</b></h4>" +
         "<p>Please verify your Email to complete the registration<br>To verify your email, open the link:</p><br><br>" +
         `<a href=${url}>` +
         url +
