@@ -1,6 +1,7 @@
 // node modules
 var express = require('express');
 const mongoose = require('mongoose');
+const passport = require('passport');
 
 
 var userAuthRouter = express.Router();
@@ -14,6 +15,9 @@ const {verifyEmail} = require('../actions/emailVerification');
 
 const jwtModule = require('../config/jwtModule');
 
+
+const facebookAuth = require('../middlewares/facebookAuth')
+const verifyFacebookUser = passport.authenticate("facebook-token");
 
 
 userAuthRouter.route('/login')
@@ -80,8 +84,9 @@ userAuthRouter.route('/login')
 // 
 userAuthRouter.post("/test", async (req, res, next) => {
   
-  console.log("cookie.Authorization: " , req.cookies.Authorization);
-  console.log("cookie.zain: " , req.cookies.zain);
+  // console.log("cookie.Authorization: " , req.cookies.Authorization);
+  // console.log("cookie.zain: " , req.cookies.zain);
+  res.status(200).json({status: true, message: "Verification mail sent successfully. Now verify your email"});
 
 });
 
@@ -187,6 +192,19 @@ userAuthRouter.get("/emailverification/:email/:token", async (req, res, next) =>
 
 
 });
+
+
+userAuthRouter.get('/facebook/token', verifyFacebookUser, (req, res) => {
+  if (req.user) {
+    // var token = authenticate.getToken({_id: req.user._id});
+    // var token = 'temp token';
+
+    res.statusCode = 200;
+    res.setHeader('Content-Type', 'application/json');
+    res.json({success: true, token: token, status: 'You are successfully logged in!'});
+  }
+});
+
 
 
 

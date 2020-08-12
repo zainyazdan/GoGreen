@@ -18,6 +18,10 @@ const userSchema = new Schema({
     password: {
       type: String,
     },
+
+    facebookId: {String},
+    username: {String},
+
     verified: {
       type: Boolean,
       default: false

@@ -11,6 +11,17 @@ var app = express();
 // const headersMiddleware = require('./middlewares/HeaderMiddleware')
 // app.use(headersMiddleware);
 
+// Secure traffic only
+app.all('*', (req, res, next) => {
+  if (req.secure) {
+    return next();
+  }
+  else {
+    res.redirect(307, 'https://' + req.hostname + ':' + app.get('secPort') + req.url);
+  }
+});
+
+
 
 const headerMiddleware = require("./middlewares/HeaderMiddleware");
 app.use(headerMiddleware);
