@@ -16,9 +16,6 @@ const {verifyEmail} = require('../actions/emailVerification');
 const jwtModule = require('../config/jwtModule');
 
 
-const facebookAuth = require('../middlewares/facebookAuth')
-const verifyFacebookUser = passport.authenticate("facebook-token");
-
 
 userAuthRouter.route('/login')
 .post(async (req, res, next) => {
@@ -97,14 +94,14 @@ userAuthRouter.route('/signup')
 
   try{
 
-    if(!req.body.firstName || !req.body.lastName || !req.body.email || !req.body.password)
-    {
+    if(!req.body.firstName || !req.body.lastName || !req.body.email || !req.body.password){
         return res.status(400).json("Provides all parameters");
     }
 
-    let user = await UserModel.findOne({email : req.body.email});
+    let user = await UserModel.findOne( {email : req.body.email} );
 
-    if(user){
+    if(user)
+    {
         return res.status(409).json("User Already Exists");
     }
 
@@ -133,14 +130,14 @@ userAuthRouter.route('/signup')
 
     // if (process.env.NODE_ENV === "development") 
     {
-        CLIENT_NAME = "http://localhost:3000/auth/user";
+        CLIENT_NAME = "http://localhost:" + process.env.PORt + "/auth/user";
     }
     
-    let mailSent = await sendVerifyEmailURL(CLIENT_NAME, req.body.email);
-    if (!mailSent)
-      return res.send(
-        "User created, but Unable to send verification email, try later"
-    );
+    // let mailSent = await sendVerifyEmailURL(CLIENT_NAME, req.body.email);
+    // if (!mailSent)
+    //   return res.send(
+    //     "User created, but Unable to send verification email, try later"
+    // );
      
     res.status(200).json({status: true, message: "Verification mail sent successfully. Now verify your email"});
 
@@ -189,22 +186,36 @@ userAuthRouter.get("/emailverification/:email/:token", async (req, res, next) =>
       console.error(error);
       res.status(500).send();
     }
-
-
 });
 
 
-userAuthRouter.get('/facebook/token', verifyFacebookUser, (req, res) => {
+
+userAuthRouter.get('/login/facebook', passport.authenticate("facebook-token") , (req, res) => {
   if (req.user) {
     // var token = authenticate.getToken({_id: req.user._id});
     // var token = 'temp token';
 
     res.statusCode = 200;
     res.setHeader('Content-Type', 'application/json');
-    res.json({success: true, token: token, status: 'You are successfully logged in!'});
+    res.json({success: true, token: "TEMP TOKEN", status: 'You are successfully logged in!'});
   }
 });
 
+
+// auth with google+
+userAuthRouter.get('/login/google', passport.authenticate('google', {
+  scope: [
+    'https://www.googleapis.com/auth/userinfo.profile',
+    'https://www.googleapis.com/auth/userinfo.email'
+  ]
+
+}));
+
+
+// callback route for google to redirect to
+userAuthRouter.get('/google/redirect',  passport.authenticate('google'), (req, res) => {
+  res.send('you reached the redirect URI');
+});
 
 
 

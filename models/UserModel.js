@@ -13,15 +13,23 @@ const userSchema = new Schema({
     email: {
       type: String,
       unique: true,
-      required: true
+      // required: true
     },
     password: {
       type: String,
     },
-
-    facebookId: {String},
-    username: {String},
-
+    facebookId: {
+      type: String
+    },
+    googleId: {
+      type: String
+    },
+    username: {
+      type: String
+    },
+    profilePicture: {
+      type: String
+    },
     verified: {
       type: Boolean,
       default: false

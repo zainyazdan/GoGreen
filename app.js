@@ -3,10 +3,29 @@ var express = require('express');
 var path = require('path');
 var cookieParser = require('cookie-parser');
 var logger = require('morgan');
-
+var passport = require('passport');
 const mongoDB = require('./config/db');
+require('./middlewares/facebookAuth')
+require('./middlewares/googleAuth')
 
 var app = express();
+
+app.use(require('express-session')({
+  secret: 'keyboard cat',
+  resave: true,
+  saveUninitialized: true
+}));
+app.use(passport.initialize());
+app.use(passport.session());
+
+passport.serializeUser(function(user, done) {
+  done(null, user);
+});
+
+passport.deserializeUser(function(user, done) {
+  done(null, user);
+});
+
 
 // const headersMiddleware = require('./middlewares/HeaderMiddleware')
 // app.use(headersMiddleware);
@@ -25,8 +44,6 @@ app.all('*', (req, res, next) => {
 
 const headerMiddleware = require("./middlewares/HeaderMiddleware");
 app.use(headerMiddleware);
-
-
 
 app.use((req, res, next)=>
 {
