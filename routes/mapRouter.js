@@ -13,58 +13,26 @@ const verifyUser = passport.authenticate("jwt", { session: false });
 // File modules
 
 const MapDataModel = require('../models/mapDataModel')
-const fileManager = require('../config/fileManager')
 const auth = require('../middlewares/auth')
-
-
-
-// Multer configuration
-
-const { log } = require('debug');
-
-const storage = multer.diskStorage({
-    destination: (req, file, cb) => {
-        cb(null, 'public/images' );
-    },
-
-    filename: (req, file, cb) => {
-        // console.log("File name : " + Date.now() + file.originalname);
-        cb(null,  Date.now() + '-' + file.originalname)
-    }
-});
-
-const imageFileFilter = (req, file, cb) => {
-    if(!file.originalname.match(/\.(jpg|jpeg|png|gif)$/)) {
-        return cb(new Error('You can only upload image files!'), false);
-    }
-    cb(null, true);
-};
-
-const upload = multer({ 
-      storage: storage,
-      limits: {fileSize: 1024 * 1024 * 5},  // maximum file size is 5 MB
-      fileFilter: imageFileFilter
-    });
+const fileManager = require('../config/fileManager')
+// const deleteFileManager = require('../config/fileManager').DeleteFile
 
 
 
 
 // to get all map points
 
-mapRouter.route('/map_points/:userId')
+mapRouter.route('/map_points')
 // .get(auth.verifyToken, auth.verifyUser, async (req, res, next) => {
   .get(auth.verifyToken, verifyUser, async (req, res, next) => {
   
 try {
   
     // console.log("req.user.id : ", req.user.id);
-
     // for testing
     // req.user = {};
     // req.user.id = req.params.userId;
-
-
-
+    // console.log("req.user : " + req.user.id );
     let data = await MapDataModel.find({userId: req.user.id}).
     select('plantNumber longitude latitude imagePath date _id')
     .sort({'updatedAt': 1});
@@ -72,29 +40,25 @@ try {
     if(data.length == 0)
     {
         return res.status(200)
-      .json({success:false, message:"No record found against this user id"});
+      .json({success:false, message:"No record found against this user id 1"});
     }
     
     res.status(200)
     .json({success:true, data:data});
 
-} catch (error) {
-  console.log(error);
-}
-
-
+  } catch (error) {
+    console.log(error);
+  }
 })
-.put(auth.verifyToken, verifyUser,   (req, res, next) => {
+.put(auth.verifyToken, verifyUser, (req, res, next) => {
   res.statusCode = 403;
   res.end('PUT operation not supported on map/map_points');
 })
-.post(auth.verifyToken, verifyUser,  upload.array('imageFile', 10) , async (req, res, next) => {
-  // .post( upload.array('uploadedImages', 10), upload.single('imageFile') , async (req, res, next) => {
+.post(auth.verifyToken, verifyUser,  fileManager.uploadMapImage.array('imageFile', 10) , async (req, res, next) => {
 
- 
 try {
   
-    console.log("req.files : " + req.files.length); 
+    // console.log("req.files : " + req.files.length); 
 
     if(req.files.length == 0){
       return res.status(400).json("Attach a(n) Image(s)");
@@ -112,11 +76,9 @@ try {
       req.body.imagePath.push(req.files[i].path); 
     }
 
-    
     // for (let i = 0; i < req.body.imagePath.length; i++) {
     //     console.log(" req.body.imagePath : "  +   req.body.imagePath[i]);
     // }
-
 
     // for testing
     // req.body.userId = '5f2b2b535107e40378108adf';
@@ -140,7 +102,7 @@ try {
 }
 
 })
-.delete(auth.verifyToken, verifyUser,   async (req, res, next) => {
+.delete(auth.verifyToken, verifyUser,  async (req, res, next) => {
 
   try{
     // for testing
@@ -193,7 +155,7 @@ try {
 });
 
 
-mapRouter.route('/map_points/:userId/:plant_id')
+mapRouter.route('/map_points/:plant_id')
 .get(auth.verifyToken, verifyUser,  async (req, res, next) => {
 
   try{
@@ -481,7 +443,7 @@ mapRouter.route('/total_trees_planted/this_month')
       if(temp <= 30)
       {
         count++;
-        console.log("YES !!");
+        // console.log("YES !!");
       }
     }
 
@@ -509,13 +471,10 @@ mapRouter.route('/total_trees_planted/this_month')
 
 
 
-mapRouter.route('/total_trees_planted/user/:userId')
+mapRouter.route('/total_trees_planted/user')
 .get(auth.verifyToken, verifyUser,  async (req, res, next) => {
 
-
-  try{
-
-      
+  try{      
     // for testing
     // req.user = {};
     // // req.user.id = '5f2b2b535107e40378108adf';
@@ -528,7 +487,7 @@ mapRouter.route('/total_trees_planted/user/:userId')
     if(data.length == 0)
     {
       return res.status(200)
-        .json({success:false, message:"No record found against this user id"});
+        .json({success:false, message:"No record found against this user id 2"});
     }
     res.status(200)
     .json({success:true, total_plants:data.length});
@@ -553,6 +512,88 @@ mapRouter.route('/total_trees_planted/user/:userId')
 
 
 
+mapRouter.route('/pictures/:plant_id')
+.get( async (req, res, next) => {
+  res.statusCode = 403;
+  res.end('GET operation not supported on map/map_points/pictures/:plant_id');
+})
+.put( async (req, res, next) => {
+  res.statusCode = 403;
+  res.end('PUT operation not supported on map/map_points/pictures/:plant_id');
+})
+.post(auth.verifyToken, verifyUser, fileManager.uploadMapImage.single('imageFile'), async (req, res, next) => {
+
+  try{
+    // req.user = {};
+    // req.user.id = '5f2b2b535107e40378108adf';
+
+    let data = await MapDataModel.findOne(
+      {
+        _id : req.params.plant_id,
+        userId : req.user.id
+    });
+
+    if(!data)
+    {
+        return res.status(200)
+        .json({success:false, message:"No record found to be deleted against this user_id / plant_id"});
+    }
+
+    console.log("req.file : ", req.file);
+
+    data.imagePath.push(req.file.path);
+
+    await data.save();
+
+   
+    return res.status(200)
+    .json({success:true, message:"image successfully inserted"});
+
+  } catch (error) {
+    console.log(error);
+  }
+
+
+})
+.delete(auth.verifyToken, verifyUser, async (req, res, next) => {
+
+  try{
+    // req.user = {};
+    // req.user.id = '5f2b2b535107e40378108adf';
+
+    let data = await MapDataModel.findOne(
+      {
+        _id : req.params.plant_id,
+        userId : req.user.id,
+        imagePath : req.body.path
+    });
+
+    if(!data)
+    {
+        return res.status(200)
+        .json({success:false, message:"No record found to be deleted against this user_id / plant_id / image path"});
+    }
+
+    // console.log("res : ", data);
+
+    let index = data.imagePath.indexOf(req.body.path);
+    // console.log("index : " + index);
+
+    await fileManager.DeleteFile( req.body.path );
+
+    data.imagePath.splice(index, 1);
+    // console.log("imagePath : " + data.imagePath);
+
+    await data.save();
+
+    return res.status(200)
+        .json({success:true, message:"image successfully deleted"});
+    
+  } catch (error) {
+    console.log(error);
+  }
+
+});
 
 
 async function timeDifferenceInDays(_date, _currentDate)
@@ -567,7 +608,7 @@ async function timeDifferenceInDays(_date, _currentDate)
   // console.log("diffDays     : " + diffDays);
 
 
-  console.log("diffDaysround: " + diffDaysround);
+  // console.log("diffDaysround: " + diffDaysround);
   
   return diffDaysround;
 }

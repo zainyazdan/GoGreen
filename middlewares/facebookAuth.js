@@ -17,8 +17,7 @@ exports.facebookPassport = passport.use(new FacebookTokenStrategy({
         firstName: profile.name.givenName,
         lastName: profile.name.familyName,
         username: profile.displayName,
-        email: profile.emails[0].value,
-        profilePicture: profile._json.picture,
+        profilePicture: profile.photos[0].value,
         verified: true
       };
       
@@ -26,10 +25,11 @@ exports.facebookPassport = passport.use(new FacebookTokenStrategy({
 
       console.log('User: ', tempUser);
       
-      UserModel.findOne({facebookId: profile.id}).then((currentUser) => {
+      UserModel.findOne({facebookId: profile.id})
+      .then((currentUser) => {
           if(currentUser){
               // already have this user
-              // console.log('currentUser is: ', currentUser);
+              console.log('User already exists !! : ');
               // do something
               done(error, null);
           } else {
@@ -39,7 +39,6 @@ exports.facebookPassport = passport.use(new FacebookTokenStrategy({
                 firstName: profile.name.givenName,
                 lastName: profile.name.familyName,
                 username: profile.displayName,
-                email: profile.emails[0].value | 'NILL',
                 profilePicture: profile.photos[0].value,
                 verified: true
               }).save().then((newUser) => {

@@ -25,10 +25,12 @@ const userSchema = new Schema({
       type: String
     },
     username: {
-      type: String
+      type: String,
+      required: true
     },
     profilePicture: {
-      type: String
+      type: String,
+      required: true
     },
     verified: {
       type: Boolean,
