@@ -80,8 +80,14 @@ userAuthRouter.route('/login')
 });
 
 // 
-userAuthRouter.post("/test", async (req, res, next) => {
+userAuthRouter.get('/test', (req, res, next) => {
+  var origin = req.get('origin');
+
+
+  console.log("origin: " + origin);
   
+  // console.log("req.headers.origin : " , req.headers);
+
   // console.log("cookie.Authorization: " , req.cookies.Authorization);
   // console.log("cookie.zain: " , req.cookies.zain);
   res.status(200).json({status: true, message: "Verification mail sent successfully. Now verify your email"});
@@ -190,6 +196,28 @@ userAuthRouter.get("/emailverification/:email/:token", async (req, res, next) =>
 });
 
 
+userAuthRouter.get('/logout',auth.verifyToken, verifyUser, (req, res, next) => {
+
+  try {
+
+    if (req.user) {
+      // res.cookies('Authorization', {expires: Date.now()});
+      res.cookie("Authorization", "Removed", {expires: new Date()});
+      res.status(200).json({success: true, message: 'You are successfully logged-out'})
+
+    }
+    else {
+      var err = new Error('You are not logged in!');
+      err.status = 403;
+      next(err);
+    }
+
+  } catch (error) {
+    console.log(error);
+  }
+
+});
+
 
 
 // update profile picture
@@ -278,7 +306,6 @@ userAuthRouter.get('/login/google', passport.authenticate('google', {
     'https://www.googleapis.com/auth/userinfo.profile',
     'https://www.googleapis.com/auth/userinfo.email'
   ]
-
 }));
 
 

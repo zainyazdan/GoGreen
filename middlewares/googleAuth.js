@@ -3,6 +3,7 @@ var passport = require('passport');
 var UserModel = require('../models/UserModel');
 var GoogleStrategy = require('passport-google-oauth20').Strategy;
  
+require('dotenv').config();
 
 // passport.use(new GoogleStrategy({
 //     clientID: '1021847502731-ua2e1qqsvege8rlsaf9f8vjiqg93t5ie.apps.googleusercontent.com',
@@ -24,8 +25,8 @@ var GoogleStrategy = require('passport-google-oauth20').Strategy;
 passport.use(
   new GoogleStrategy({
       // options for google strategy
-          clientID: '1021847502731-ua2e1qqsvege8rlsaf9f8vjiqg93t5ie.apps.googleusercontent.com',
-          clientSecret: 'OiDtWEHw-uMoY3HktxV36vPx',
+          clientID: process.env.GOOGLE_CLIENT_ID ,
+          clientSecret: process.env.GOOGLE_CLIENT_SECRET ,
           callbackURL: '/auth/user/google/redirect'
   }, (accessToken, refreshToken, profile, done) => {
       // check if user already exists in our own db

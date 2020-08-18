@@ -9,14 +9,13 @@ var JwtStrategy = require("passport-jwt").Strategy,
   ExtractJwt = require("passport-jwt").ExtractJwt;
 
 
-
 module.exports.verifyToken = function(req, res, next)
 {
   let token = req.cookies.Authorization;
   // console.log("auth token : " + token);
   if(!token)
   {
-    return res.status(401).send('Unauthorized access 1');
+    return res.status(401).send('You are not logged-in !!');
   }
 
   let result = jwt.verify(token);
@@ -24,7 +23,7 @@ module.exports.verifyToken = function(req, res, next)
   
   if(!result)
   {
-    return res.status(401).send('Unauthorized access 2');
+    return res.status(401).send('Unauthorized access (invalid token) !!');
   }
 
   next();

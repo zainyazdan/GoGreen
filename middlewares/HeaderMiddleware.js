@@ -12,8 +12,14 @@ module.exports = function (req, res, next) {
     // "https://www.proyectominga.com",
   ];
   var origin = req.headers.origin;
+
   if (allowedOrigins.indexOf(origin) > -1) {
-    res.setHeader("Access-Control-Allow-Origin", origin);
+    // res.setHeader("Access-Control-Allow-Origin", origin);
+    res.setHeader("Access-Control-Allow-Origin", "*");
+    console.log("host matched");
+  }
+  else{
+    console.log("host not matched");
   }
 
   res.setHeader("Cache-Control", "no-cache");
@@ -25,7 +31,14 @@ module.exports = function (req, res, next) {
     "Access-Control-Allow-Headers",
     "Content-Type, Authorization, X-Requested-With, Cookies, Set-Cookie"
   );
+
+  console.log("req.method : " + req.method);
+
   // res.setHeader("Access-Control-Request-Headers", "*");
+  if(req.method == "OPTIONS")
+  {
+    return res.status(200).json({});
+  }
 
   next();
 };

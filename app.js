@@ -7,8 +7,12 @@ var passport = require('passport');
 const mongoDB = require('./config/db');
 require('./middlewares/facebookAuth')
 require('./middlewares/googleAuth')
+const mongoose = require('mongoose');
 
 var app = express();
+
+
+// setting up session
 
 app.use(require('express-session')({
   secret: 'keyboard cat',
@@ -18,6 +22,8 @@ app.use(require('express-session')({
 app.use(passport.initialize());
 app.use(passport.session());
 
+
+// setting up passport
 passport.serializeUser(function(user, done) {
   done(null, user);
 });
@@ -27,37 +33,56 @@ passport.deserializeUser(function(user, done) {
 });
 
 
-// const headersMiddleware = require('./middlewares/HeaderMiddleware')
-// app.use(headersMiddleware);
-
-// Secure traffic only
-app.all('*', (req, res, next) => {
-  if (req.secure) {
-    return next();
-  }
-  else {
-    res.redirect(307, 'https://' + req.hostname + ':' + app.get('secPort') + req.url);
-  }
-});
-
 
 
 const headerMiddleware = require("./middlewares/HeaderMiddleware");
-app.use(headerMiddleware);
+// app.use(headerMiddleware);
+
 
 app.use((req, res, next)=>
 {
+  console.log("req.headers : ", req.headers);
 	res.header('Access-Control-Allow-Origin', "*");
-  res.header('Access-Control-Allow-Methods','GET,PUT,POST,DELETE');
-  res.header('Access-Control-Allow-Headers', '*');
+  res.header('Access-Control-Allow-Methods','GET,PUT,POST,DELETE,VIEW,PATCH');
+	// res.header('Access-Control-Allow-Headers', '*');
+  res.setHeader(
+    "Access-Control-Allow-Headers",
+    "Content-Type, Authorization, X-Requested-With, Cookies, Set-Cookie"
+  );
+
 	next();
 });
 
-// app.use(mongoDB.ConnectToDatabase);
 
-const mongoose = require('mongoose');
-const url = 'mongodb://localhost:27017/GoGreen';
-const connect = mongoose.connect(url);
+// Secure traffic only
+
+// app.all('*', (req, res, next) => {
+//   if (req.secure) {
+//     return next();
+//   }
+//   else {
+//     res.redirect(307, 'https://' + req.hostname + ':' + app.get('secPort') + req.url);
+//   }
+// });
+
+
+
+
+var DB_URL;
+if(process.env.NODE_MODE == "developing")
+{
+  DB_URL = process.env.DATABASE_URL_LOCAL;
+}
+else{
+  DB_URL = process.env.DATABASE_URL_ONLINE;
+}
+
+console.log("DB_URL : " + DB_URL);
+
+// const url = 'mongodb://localhost:27017/GoGreen';
+// const url = 'mongodb+srv://zainyazdan:mongodb@cluster0.wyshd.mongodb.net/<dbname>?retryWrites=true&w=majority';
+
+const connect = mongoose.connect(DB_URL, {autoIndex: false});
 // connecting to the database
 connect.then((db) => {
     console.log("Connected to the MongoDB server");
