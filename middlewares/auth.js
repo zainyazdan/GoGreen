@@ -9,17 +9,23 @@ var JwtStrategy = require("passport-jwt").Strategy,
   ExtractJwt = require("passport-jwt").ExtractJwt;
 
 
-module.exports.verifyToken = function(req, res, next)
+module.exports.verifyToken = async function(req, res, next)
 {
-  let token = req.cookies.Authorization;
-  // console.log("auth token : " + token);
+  // let token = req.cookies.Authorization;
+  let token = req.get("Authorization")
+
+  if(token.includes("Bearer"))
+    token = token.slice(7);
+
+  // console.log("Authorization token : " + token);
+
   if(!token)
   {
-    return res.status(401).send('You are not logged-in !!');
+    return res.status(401).send('You are not logged-in (token not found) !!');
   }
 
-  let result = jwt.verify(token);
-  // console.log("result jwt : " + result);
+  let result = await jwt.verify(token);
+  // console.log("result jwt.verify : " , result);
   
   if(!result)
   {
@@ -33,10 +39,17 @@ module.exports.verifyToken = function(req, res, next)
 
 
 var cookieExtractor = function (req) {
-  var token = null;
-  if (req && req.cookies) {
-    token = req.cookies.Authorization;
-  }
+  var token = req.get("Authorization")
+
+  if(token.includes("Bearer"))
+    token = token.slice(7);
+  // console.log("cookieExtractor token : " + token);
+
+  // if (req && req.cookies) {
+  //   token = req.cookies.Authorization;
+  //   console.log("cookieExtractor token : " + token);
+  // }
+
   return token;
 };
 

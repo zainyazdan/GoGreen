@@ -56,7 +56,7 @@ userAuthRouter.route('/login')
       let token = await jwtModule.sign(payload, user._id);
 
       // console.log("token: " , token);
-      res.cookie("Authorization", token);
+      // res.cookie("Authorization", token);
       // res.cookie("zain", "Yazdan");
 
       res.status(200).send({
@@ -67,7 +67,9 @@ userAuthRouter.route('/login')
           lastName: user.lastName,
           username: user.username,
           profilePicture: user.profilePicture,
-        }
+        },
+        token: token
+
       });
 
       
@@ -80,11 +82,11 @@ userAuthRouter.route('/login')
 });
 
 // 
-userAuthRouter.get('/test', (req, res, next) => {
+userAuthRouter.get('/test', auth.verifyToken, verifyUser, (req, res, next) => {
   var origin = req.get('origin');
 
 
-  console.log("origin: " + origin);
+  // console.log("origin: " + origin);
   
   // console.log("req.headers.origin : " , req.headers);
 
@@ -278,7 +280,7 @@ userAuthRouter.get('/login/facebook', passport.authenticate("facebook-token") , 
       let token = await jwtModule.sign(payload, req.user._id);
 
       // console.log("token: " , token);
-      res.cookie("Authorization", token);
+      // res.cookie("Authorization", token);
       // res.cookie("zain", "Yazdan");
 
       res.status(200).send({
@@ -289,7 +291,8 @@ userAuthRouter.get('/login/facebook', passport.authenticate("facebook-token") , 
           lastName: req.user.lastName,
           username: req.user.username,
           profilePicture: req.user.profilePicture,
-        }
+        },
+        token: token
       });
 
 
@@ -335,7 +338,7 @@ userAuthRouter.get('/google/redirect',  passport.authenticate('google'), async (
       let token = await jwtModule.sign(payload, req.user._id);
 
       // console.log("token: " , token);
-      res.cookie("Authorization", token);
+      // res.cookie("Authorization", token);
       // res.cookie("zain", "Yazdan");
 
       res.status(200).send({
@@ -346,7 +349,8 @@ userAuthRouter.get('/google/redirect',  passport.authenticate('google'), async (
           lastName: req.user.lastName,
           username: req.user.username,
           profilePicture: req.user.profilePicture,
-        }
+        },
+        token: token
       });
     }
   } catch (error) {

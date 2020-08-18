@@ -3,22 +3,16 @@ module.exports = function (req, res, next) {
     "http://localhost:3000",
     "http://localhost:3001",
 
-    // "http://mingablockchain.herokuapp.com",
-    // "https://mingablockchain.herokuapp.com",
-    // "https://master.d28xtidaguhv2z.amplifyapp.com",
-    // "https://mingaproject.com",
-    // "https://www.mingaproject.com",
-    // "https://proyectominga.com",
-    // "https://www.proyectominga.com",
   ];
   var origin = req.headers.origin;
 
   if (allowedOrigins.indexOf(origin) > -1) {
     // res.setHeader("Access-Control-Allow-Origin", origin);
-    res.setHeader("Access-Control-Allow-Origin", "*");
+    res.setHeader("Access-Control-Allow-Origin", origin);
     console.log("host matched");
   }
   else{
+    res.setHeader("Access-Control-Allow-Origin", "*");
     console.log("host not matched");
   }
 

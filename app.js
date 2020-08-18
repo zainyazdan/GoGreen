@@ -36,22 +36,22 @@ passport.deserializeUser(function(user, done) {
 
 
 const headerMiddleware = require("./middlewares/HeaderMiddleware");
-// app.use(headerMiddleware);
+app.use(headerMiddleware);
 
 
-app.use((req, res, next)=>
-{
-  console.log("req.headers : ", req.headers);
-	res.header('Access-Control-Allow-Origin', "*");
-  res.header('Access-Control-Allow-Methods','GET,PUT,POST,DELETE,VIEW,PATCH');
-	// res.header('Access-Control-Allow-Headers', '*');
-  res.setHeader(
-    "Access-Control-Allow-Headers",
-    "Content-Type, Authorization, X-Requested-With, Cookies, Set-Cookie"
-  );
+// app.use((req, res, next)=>
+// {
+//   // console.log("req.headers : ", req.headers);
+// 	res.header('Access-Control-Allow-Origin', "*");
+//   res.header('Access-Control-Allow-Methods','GET,PUT,POST,DELETE,VIEW,PATCH');
+// 	// res.header('Access-Control-Allow-Headers', '*');
+//   res.setHeader(
+//     "Access-Control-Allow-Headers",
+//     "Content-Type, Authorization, X-Requested-With, Cookies, Set-Cookie"
+//   );
 
-	next();
-});
+// 	next();
+// });
 
 
 // Secure traffic only

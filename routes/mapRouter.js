@@ -257,7 +257,7 @@ try{
 
 
 mapRouter.route('/total_trees_planted/overall')
-.get(auth.verifyToken, verifyUser,  async (req, res, next) => {
+.get(  async (req, res, next) => {
 
   try{
 
@@ -299,7 +299,7 @@ mapRouter.route('/total_trees_planted/overall')
 
 
 mapRouter.route('/total_trees_planted/today')
-.get(auth.verifyToken, verifyUser,  async (req, res, next) => {
+.get( async (req, res, next) => {
 
   // for testing
   // req.user = {};
@@ -355,7 +355,7 @@ mapRouter.route('/total_trees_planted/today')
 
 
 mapRouter.route('/total_trees_planted/this_week')
-.get(auth.verifyToken, verifyUser,  async (req, res, next) => {
+.get(  async (req, res, next) => {
 
   try{
       
@@ -413,7 +413,7 @@ mapRouter.route('/total_trees_planted/this_week')
 
 
 mapRouter.route('/total_trees_planted/this_month')
-.get(auth.verifyToken, verifyUser,  async (req, res, next) => {
+.get(  async (req, res, next) => {
 
   try{
 
@@ -472,7 +472,7 @@ mapRouter.route('/total_trees_planted/this_month')
 
 
 mapRouter.route('/total_trees_planted/user')
-.get(auth.verifyToken, verifyUser,  async (req, res, next) => {
+.get(  async (req, res, next) => {
 
   try{      
     // for testing

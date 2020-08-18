@@ -28,9 +28,12 @@ exports.sign = async function (payload, id) {
     // subject: `${id}`,
     // audience: "mingaproject.com",
     // algorithm: "RS256",
-    expiresIn: process.env.TOKEN_EXPIRY_TIME
+    // expiresIn: 60
+    expiresIn: parseInt(process.env.TOKEN_EXPIRY_TIME)
   };
   try {
+  // console.log("TOKEN_EXPIRY_TIME : " + process.env.TOKEN_EXPIRY_TIME );
+
     return await jwt.sign(payload, process.env.TOKEN_KEY , signOptions);
 
 } catch (error) {
