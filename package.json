@@ -1,9 +1,9 @@
 {
   "name": "gogreen",
-  "version": "0.0.0",
+  "version": "1.0.0",
   "private": true,
   "scripts": {
-    "start": "nodemon ./bin/www"
+    "start": "node ./bin/www"
   },
   "engines": {
     "node": "12.16.3",
@@ -30,5 +30,8 @@
     "passport-facebook-token": "^4.0.0",
     "passport-google-oauth20": "^2.0.0",
     "passport-jwt": "^4.0.0"
+  },
+  "devDependencies": {
+    "nodemon": "^2.0.2"
   }
 }
