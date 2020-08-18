@@ -106,12 +106,16 @@ app.use(express.static(path.join(__dirname, 'public')));
 
 var userAuthRouter = require('./routes/userAuthRouter');
 var mapRouter = require('./routes/mapRouter');
+var indexRouter = require('./routes/index');
+
+
+
 const { allowedNodeEnvironmentFlags } = require('process');
+
 
 app.use('/public',express.static('public'));
 
-
-
+app.use('/', indexRouter);
 app.use('/auth/user', userAuthRouter);
 app.use('/map', mapRouter);
 

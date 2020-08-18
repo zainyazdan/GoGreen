@@ -26,7 +26,7 @@ module.exports = function (req, res, next) {
     "Content-Type, Authorization, X-Requested-With, Cookies, Set-Cookie"
   );
 
-  console.log("req.method : " + req.method);
+  // console.log("req.method : " + req.method);
 
   // res.setHeader("Access-Control-Request-Headers", "*");
   if(req.method == "OPTIONS")

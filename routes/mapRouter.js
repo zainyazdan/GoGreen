@@ -615,6 +615,10 @@ async function timeDifferenceInDays(_date, _currentDate)
 
 
 
+mapRouter.get('/test', function(req, res, next) {
+
+  res.status(200).json({success: true, message: "Reply from the server"});
+});
 
 
 
